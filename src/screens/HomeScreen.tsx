@@ -2,8 +2,9 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { Component } from 'react';
-import { Button, Text, View } from 'react-native';
-import { RootStackParamList } from '../containers/NavigationContainer';
+import { Text, View } from 'react-native';
+import { Button } from 'react-native-paper';
+import { RootStackParamList } from 'containers/NavigationContainer';
 
 
 export type HomeScreenProps = {
@@ -15,9 +16,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }   ) =>  {
   
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-      <Button  title="Go to Demos"  onPress={() => { navigation.navigate('Demos', {})   }} />
-      <Button  title="Go to Demo FlatList1"  onPress={() => { navigation.navigate('Demos', {demo: 'flatlist1'})   }} />
+      
+      <Button  mode="contained"  onPress={() => { navigation.navigate('Demos', {})   }} >Demos</Button>
+      
     </View>
   );
 }

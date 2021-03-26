@@ -44,12 +44,10 @@ const genData = (maxGen: number): fakeData[] => {
   
 
 const FlatListJson: React.FC = () => {
-    const data = genData(18);
-    console.log(data)
     return  (
     <SafeAreaView>
         <FlatList
-        data={data}
+        data={genData(18)}
         renderItem={({ item }) => (<Item title={item.title} />)}
         keyExtractor={item => item.id}
         />

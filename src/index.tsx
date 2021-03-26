@@ -5,12 +5,14 @@ import AppContainer from './containers/AppContainer';
 
 const theme = {
   ...DefaultTheme,
-  roundness: 2,
+  //roundness: 4,
+  /*
   colors: {
     ...DefaultTheme.colors,
-    primary: '#3498db',
+    primary: 'blue',
     accent: '#f1c40f',
-  },
+  }
+  */
 };
 
 

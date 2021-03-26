@@ -15,6 +15,8 @@ import axios from "axios";
 import {usePosts, Post}  from "@hooks/usePosts";
 import {useInfinitePlayers, Player}  from "@hooks/useInfinitePlayers";
 import { useNavigation } from '@react-navigation/native';
+import useInfiniteProjects, {Project} from "@hooks/useInfiniteProjects";
+import _ from "lodash";
 
 
 
@@ -34,21 +36,34 @@ getItemLayout = (data, index) => ({
   })
   */
 //7.Use keyExtractor
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		paddingBottom: 8,
+		backgroundColor: "white",
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	text: {
+		fontWeight: '600',
+		fontSize: 16,
+	},
+})
 
 type PostItemProps = {
 	item: Post
 }
 
-type PlayerItemProps = {
-	item: Player
+type ProjectItemProps = {
+	item: Project
 }
 
-const PlayerItem: React.FC<PlayerItemProps> = ({item}) => {
+const ProjectItem: React.FC<ProjectItemProps> = ({item}) => {
 	const navigation = useNavigation();
 	return (
-		<TouchableOpacity key={item.id} onPress={() => navigation.navigate('Detail', {type: "player",item: item})}>
-			<View style={{ flex: 1, paddingTop: 22}}>
-				<Text>{item.firstName} {item.lastName}</Text>
+		<TouchableOpacity key={item.id} onPress={() => navigation.navigate('Detail', {type: "project",item: item})}>
+			<View style={{ flex: 1, padding: 20}}>
+				<Text>{item.id} -  {item.name}</Text>
 			</View>
 		</TouchableOpacity>
 
@@ -66,30 +81,48 @@ const PostItem: React.FC<PostItemProps> = ({item}) => {
 
 	)
 }
+type FlatListRQueryInfiniteProps = {
+    limit: number
+}
+export const FlatListRQueryInfinite: React.FC<FlatListRQueryInfiniteProps> = ({limit = 8}) => {
 
-export const FlatListRQueryInfinite: React.FC = () => {
+	const { status, data, error, isLoading, refetch, fetchNextPage, hasNextPage, hasPreviousPage, isSuccess } = useInfiniteProjects();
 
-		const {
-			status,
-			data,
-			error,
-			isFetching,
-			isFetchingNextPage,
-			isFetchingPreviousPage,
-			fetchNextPage,
-			fetchPreviousPage,
-			hasNextPage,
-			hasPreviousPage,
-		} = useInfiniteProjects();
+	 if (isLoading) return <ActivityIndicator animating={isLoading}/>;
+	 if (status === "error") return <Text style={styles.text}>{error?.message}</Text>;
+	 //if (hasNextPage)
+	 console.log(hasNextPage, "hasNext",data)
+	 //let minTosee = data.projects.length > 10;
+	 return   (
 
-		const loadMoreButtonRef = React.useRef()
 
-		useIntersectionObserver({
-			target: loadMoreButtonRef,
-			onIntersect: fetchNextPage,
-			enabled: hasNextPage,
-		})
+				<FlatList
+								//removeClippedSubviews={false}
+								//maxToRenderPerBatch={5}
+								//initialNumToRender={5}
+								data={data?.projects}
+								keyExtractor={item => {
+									return item.id.toString()
+									}
+								}
+								renderItem={({item} ) => {
+									return <ProjectItem key={item.id} item={item}/>
+								}}
+								//onRefresh={refetch}
+								refreshing={isLoading}
+								progressViewOffset={100}
+								onEndReached={(end) => {
+									if (hasNextPage) {
+										fetchNextPage()
+									}
 
+								}}
+				/>
+
+
+		)
+
+/*
 		return (
 			<div>
 				<h1>Infinite Loading</h1>
@@ -148,19 +181,16 @@ export const FlatListRQueryInfinite: React.FC = () => {
 						</div>
 					</>
 				)}
-				<hr />
-				<Link href="/about">
-					<a>Go to another page</a>
-				</Link>
-				<ReactQueryDevtools initialIsOpen />
+
+
 			</div>
 		)
-	}
+*/
 
 }
 
 
-export const FlatListRQuerySimple: React.FC = () => {
+export const FlatListRQuery: React.FC = () => {
 	const { status, data, error, isFetching } = usePosts();
 
 	if (status === 'error') {
@@ -177,7 +207,7 @@ export const FlatListRQuerySimple: React.FC = () => {
 					data={data}
 					keyExtractor={item => item.id.toString()}
 					renderItem={({ item }) => (
-						<PlayerItem
+						<PostItem
 							item={item}
 						/>
 					)}

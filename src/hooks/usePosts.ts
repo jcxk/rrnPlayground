@@ -15,22 +15,9 @@ export const PostsRestHandler = async(): Promise<Post> => {
         );
         return data;
 }
-export const PostRestHandler = async (id: number) => {
-    const { data } = await axios.get(
-        `https://jsonplaceholder.typicode.com/posts/${id}`
-    );
-    return data;
-};
-
 
 export const usePosts = ():UseQueryResult  =>{
     return useQuery("posts", PostsRestHandler);
-}
-
-export const usePost = (postId: number) => {
-    return useQuery(["post", postId], () => PostRestHandler(postId),
-        { enabled: !!postId  }
-        );
 }
 
 export default usePosts;
